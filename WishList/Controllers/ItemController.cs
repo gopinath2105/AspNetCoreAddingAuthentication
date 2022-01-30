@@ -35,7 +35,7 @@ namespace WishList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Models.Item item)
+        public IActionResult Create(Item item)
         {
             var user = _userManager.GetUserAsync(HttpContext.User).Result;
             item.User = user;
