@@ -21,9 +21,8 @@ namespace WishList.Controllers
 
         public IActionResult Index()
         {
-            var User = _userManager.GetUserAsync(HttpContext.User);
-            var user = _userManager.GetUserAsync(HttpContext.User).Result;
-            var model = _context.Items.Where(u => u.Id == User.Id).ToList(); 
+            var User = _userManager.GetUserAsync(HttpContext.User).Result; 
+            var model = _context.Items.Where(u => u.User.Id == User.Id).ToList(); 
 
             return View("Index", model);
         }
@@ -47,7 +46,11 @@ namespace WishList.Controllers
 
         public IActionResult Delete(int id)
         {
+            var user = _userManager.GetUserAsync(HttpContext.User).Result;
             var item = _context.Items.FirstOrDefault(e => e.Id == id);
+            if (item.User != user)
+                return Unauthorized();
+
             _context.Items.Remove(item);
             _context.SaveChanges();
             return RedirectToAction("Index");
